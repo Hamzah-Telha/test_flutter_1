@@ -22,20 +22,11 @@ class MyApp extends StatefulWidget
 
 class _MyAppState extends State<MyApp>
 {
-    var _questionIndex = 0;
-
-    void _answerQuestion()
-    {
-      setState(() {
-        _questionIndex = _questionIndex + 1;
-      });
-      print(_questionIndex);
-    }
   @override
   Widget build(BuildContext context)
   {
 
-    var questions = [
+    final _questions = const [
       {
         'questionText': 'What\'s your favorite color?',
         'answers': ['Black', 'Rad', 'Green', 'White'],
@@ -50,22 +41,33 @@ class _MyAppState extends State<MyApp>
       },
     ];
 
+    var _questionIndex = 0;
+
+    void _answerQuestion()
+    {
+      setState(() {
+        _questionIndex = _questionIndex + 1;
+      });
+      print(_questionIndex);
+
+      if (_questionIndex < _questionIndex + 1)
+        print('We have more questions!');
+      else
+        print('No more questions!');
+    }
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text('My First App'),
         ),
-        body: Column(
-          children: [
-            Question(
-              questions[_questionIndex]['questionText'] as String,
-              ),
-            ...(questions[_questionIndex]['answers'] as List<String>)
-                .map((answer) {
-              return Answer(_answerQuestion, answer);
-            }).toList()
-          ],
-        ),
+        body: _questionIndex < _questions.length
+          ? Quiz(
+            answerQuestion: _answerQuestion,
+            questionIndex: _questionIndex,
+            questions: _questions,
+        )
+            : Result(),
       ),
     );
   }
